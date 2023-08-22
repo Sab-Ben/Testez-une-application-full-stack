@@ -11,10 +11,16 @@ import { expect } from '@jest/globals';
 import { SessionService } from 'src/app/services/session.service';
 
 import { LoginComponent } from './login.component';
+import {Router} from "@angular/router";
+import {of, throwError} from "rxjs";
+import {AuthService} from "../../services/auth.service";
+import { SessionInformation } from 'src/app/interfaces/sessionInformation.interface';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
+  let router: Router;
+  let sessionService: SessionService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -31,6 +37,8 @@ describe('LoginComponent', () => {
         ReactiveFormsModule]
     })
       .compileComponents();
+    sessionService = TestBed.inject(SessionService);
+    router = TestBed.inject(Router);
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -38,5 +46,114 @@ describe('LoginComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have a form', () => {
+    const form = fixture.nativeElement;
+    const email = form.querySelector('input[formControlName="email"]');
+    const password = form.querySelector('input[formControlName="password"]');
+    expect(email).toBeTruthy();
+    expect(password).toBeTruthy();
+  });
+
+  it('should change appearance when an input is blurred without value inside it', () => {
+    const formElement: HTMLElement = fixture.nativeElement;
+    const email = formElement.querySelector('input[formControlName="email"]');
+
+    (email as HTMLInputElement).focus();
+    (email as HTMLInputElement).blur();
+
+    const password = formElement.querySelector(
+      'input[formControlName="password"]'
+    );
+    (password as HTMLInputElement).focus();
+    (password as HTMLInputElement).blur();
+
+    expect(email!.classList).toContain('ng-invalid');
+    expect(password!.classList).toContain('ng-invalid');
+  });
+
+  it('should go back to normal when a field is filled', () => {
+    const formElement: HTMLElement = fixture.nativeElement;
+    const email: HTMLInputElement | null = formElement.querySelector(
+      'input[formControlName="email"]'
+    );
+
+    if (!email) return;
+    email.focus();
+    email.blur();
+
+    email.value = 'sab_ben@test.com';
+    email.dispatchEvent(new Event('input'));
+
+    fixture.detectChanges();
+    expect(email.value).toBe('sab_ben@test.com');
+    expect(email.classList).toContain('ng-valid');
+  });
+
+  it('should have a submit button disabled by default', () => {
+    const formElement: HTMLElement = fixture.nativeElement;
+    const submitButton = formElement.querySelector('button[type="submit"]');
+    expect(submitButton).toBeTruthy();
+    expect((submitButton as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it('should enable the submit button when the form is valid', () => {
+    const formElement: HTMLElement = fixture.nativeElement;
+    const submitButton = formElement.querySelector('button[type="submit"]');
+
+    const email: HTMLInputElement = formElement.querySelector(
+      'input[formControlName="email"]'
+    ) as HTMLInputElement;
+
+    email.value = 'sab_ben@test.com';
+    email.dispatchEvent(new Event('input'));
+
+    const password = formElement.querySelector(
+      'input[formControlName="password"]'
+    ) as HTMLInputElement;
+
+    password.value = 'sab12345!';
+    password.dispatchEvent(new Event('input'));
+
+    fixture.detectChanges();
+    expect((submitButton as HTMLButtonElement).disabled).toBe(false);
+  });
+
+  it('should show an error message when the error property is true', () => {
+    component.onError = true;
+    fixture.detectChanges();
+    const formElement: HTMLElement = fixture.nativeElement;
+    const errorMessage = formElement.querySelector('p.error');
+    expect(errorMessage).toBeTruthy();
+    expect(errorMessage!.textContent).toContain('An error occurred');
+  });
+
+  it('should state onerror if the submit fails', () => {
+    const authService = TestBed.inject(AuthService);
+    const loginSpy = jest
+      .spyOn(authService, 'login')
+      .mockImplementation(() => throwError(() => new Error('err')));
+
+    component.submit();
+    expect(loginSpy).toHaveBeenCalled();
+    expect(component.onError).toBe(true);
+  });
+
+  it('should navigate to the sessions page if the submit is successful', () => {
+    const authService = TestBed.inject(AuthService);
+
+    const navigateSpy = jest
+      .spyOn(router, 'navigate')
+      .mockImplementation(async () => true);
+
+    const authSpy = jest
+      .spyOn(authService, 'login')
+      .mockImplementation(() => of({} as SessionInformation));
+
+    jest.spyOn(sessionService, 'logIn').mockImplementation(() => {});
+    component.submit();
+    expect(authSpy).toHaveBeenCalled();
+    expect(navigateSpy).toHaveBeenCalledWith(['/sessions']);
   });
 });
