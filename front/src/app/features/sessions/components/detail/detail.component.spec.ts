@@ -171,7 +171,6 @@ describe('DetailComponent', () => {
         .spyOn(sessionApiService, 'detail')
         .mockImplementation(() => of(session));
 
-    // Call the unparticipate function
     component.unParticipate();
     expect(detailSpy).toHaveBeenCalled();
     expect(component.session).toEqual(session);
