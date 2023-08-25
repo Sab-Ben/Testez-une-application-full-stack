@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class TeacherControllerTest {
+public class TeacherControllerIntegrationTest {
 
     @Autowired
     MockMvc mockMvc;

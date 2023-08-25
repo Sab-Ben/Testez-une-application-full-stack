@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class SessionControllerTest {
+public class SessionControllerIntegrationTest {
 
     @Autowired
     MockMvc mockMvc;

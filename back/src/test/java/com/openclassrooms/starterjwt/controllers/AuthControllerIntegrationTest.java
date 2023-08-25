@@ -2,7 +2,6 @@ package com.openclassrooms.starterjwt.controllers;
 
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,8 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Tag("integration")
-public class AuthControllerIT {
+public class AuthControllerIntegrationTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -97,7 +95,6 @@ public class AuthControllerIT {
 
     @AfterAll
     public void cleanup() throws Exception{
-        // delete the user created in the register method
         String email =  "test@test.com";
         String password ="test!1234";
         String loginRequest = "{\"email\": \"" + email + "\", \"password\": \"" + password + "\"}";
