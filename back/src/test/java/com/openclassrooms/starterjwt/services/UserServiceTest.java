@@ -57,8 +57,8 @@ public class UserServiceTest {
         this.users = new ArrayList<>();
         User u1 = new User();
         User u2 = new User();
-        u1.setId((long) 1).setAdmin(false).setFirstName("John").setLastName("Doe");
-        u2.setId((long) 2).setAdmin(false).setFirstName("Jane").setLastName("Doe");
+        u1.setId((long) 1).setAdmin(false).setFirstName("Toto").setLastName("Test");
+        u2.setId((long) 2).setAdmin(false).setFirstName("Sab").setLastName("Ben");
 
         users.add(u1);
         users.add(u2);
