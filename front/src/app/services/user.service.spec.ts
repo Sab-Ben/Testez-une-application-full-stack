@@ -27,7 +27,7 @@ describe('UserService', () => {
     service.getById('1').subscribe((response) => {
       expect(response).toBeTruthy();
       expect(response.id).toBe(1);
-      expect(response.firstName).toBe('John');
+      expect(response.firstName).toBe('Toto');
     });
 
     const request = httpMock.expectOne('api/user/1');
@@ -35,9 +35,9 @@ describe('UserService', () => {
 
     request.flush({
       id: 1,
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john@test.com',
+      firstName: 'Toto',
+      lastName: 'Test',
+      email: 'toto@test.com',
       createdAt: new Date(),
       updatedAt: new Date(),
     });

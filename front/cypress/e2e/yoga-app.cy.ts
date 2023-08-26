@@ -91,7 +91,7 @@ describe('full client flow', () => {
     cy.url().should('include', '/me');
 
     // should have the user information
-    cy.get('p').contains('John DOE').should('exist');
+    cy.get('p').contains('Toto Test').should('exist');
     cy.get('p').contains('Email: mock@test.com').should('exist');
   });
 
@@ -154,7 +154,7 @@ describe('admin flow', () => {
         'New session description'
     );
     cy.get('mat-select[formControlName=teacher_id]').click();
-    cy.get('mat-option').contains('John Doe').click();
+    cy.get('mat-option').contains('Sab Ben').click();
 
     cy.get('button').contains('Save').click();
   });

@@ -83,11 +83,11 @@ describe('LoginComponent', () => {
     email.focus();
     email.blur();
 
-    email.value = 'sab_ben@test.com';
+    email.value = 'toto@test.com';
     email.dispatchEvent(new Event('input'));
 
     fixture.detectChanges();
-    expect(email.value).toBe('sab_ben@test.com');
+    expect(email.value).toBe('toto@test.com');
     expect(email.classList).toContain('ng-valid');
   });
 
@@ -106,14 +106,14 @@ describe('LoginComponent', () => {
       'input[formControlName="email"]'
     ) as HTMLInputElement;
 
-    email.value = 'sab_ben@test.com';
+    email.value = 'toto@test.com';
     email.dispatchEvent(new Event('input'));
 
     const password = formElement.querySelector(
       'input[formControlName="password"]'
     ) as HTMLInputElement;
 
-    password.value = 'sab12345!';
+    password.value = '15973';
     password.dispatchEvent(new Event('input'));
 
     fixture.detectChanges();

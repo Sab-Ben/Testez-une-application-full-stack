@@ -34,7 +34,6 @@ describe('MeComponent', () => {
   };
 
   beforeEach(async () => {
-    // @ts-ignore
     await TestBed.configureTestingModule({
       declarations: [MeComponent],
       imports: [
@@ -73,14 +72,12 @@ describe('MeComponent', () => {
   });
 
   it('should create', () => {
-    // @ts-ignore
     expect(component).toBeTruthy();
   });
 
   it('should go back to the previous page', () => {
     jest.spyOn(window.history, 'back').mockImplementation(() => {});
     component.back();
-    // @ts-ignore
     expect(window.history.back).toHaveBeenCalled();
   });
 

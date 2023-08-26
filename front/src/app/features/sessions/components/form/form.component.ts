@@ -15,7 +15,7 @@ import { SessionApiService } from '../../services/session-api.service';
 export class FormComponent implements OnInit {
 
   public onUpdate: boolean = false;
-  public sessionForm: FormGroup | undefined;
+  public sessionForm!: FormGroup;
   public teachers$ = this.teacherService.all();
   private id: string | undefined;
 

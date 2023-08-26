@@ -1,6 +1,6 @@
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import {FormGroup, ReactiveFormsModule} from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,6 +16,7 @@ import { SessionApiService } from '../../services/session-api.service';
 
 import { FormComponent } from './form.component';
 import { of } from "rxjs";
+import {Session} from "../../interfaces/session.interface";
 
 describe('FormComponent', () => {
   let component: FormComponent;
@@ -46,7 +47,7 @@ describe('FormComponent', () => {
     createdAt: new Date(),
     updatedAt: new Date(),
     teacher_id: 1,
-    users: [1, 2, 4],
+    users: [1, 2, 3],
   };
 
   beforeEach(async () => {
