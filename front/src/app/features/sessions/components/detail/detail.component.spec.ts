@@ -14,6 +14,7 @@ import { SessionApiService } from "../../services/session-api.service";
 import { Router } from "@angular/router";
 import {of} from "rxjs";
 import {By} from "@angular/platform-browser";
+import {NoopAnimationsModule} from "@angular/platform-browser/animations";
 
 
 describe('DetailComponent', () => {
@@ -47,8 +48,8 @@ describe('DetailComponent', () => {
 
   const teacher = {
     id: 1,
-    lastName: 'Sab',
-    firstName: 'Ben',
+    lastName: 'Ben',
+    firstName: 'Sab',
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -59,6 +60,7 @@ describe('DetailComponent', () => {
         RouterTestingModule,
         HttpClientTestingModule,
         ReactiveFormsModule,
+        NoopAnimationsModule,
         MatSnackBarModule,
         MatCardModule,
         MatIconModule
@@ -184,6 +186,32 @@ describe('DetailComponent', () => {
     jest.spyOn(teacherService, 'detail').mockImplementation(() => of(teacher));
     component.ngOnInit();
     expect(component.teacher).toEqual(teacher);
+  });
+
+  it('should open a snackbar and redirect to the sessions page on delete', () => {
+    component.isAdmin = true;
+    fixture.detectChanges();
+
+    const buttons = fixture.debugElement.queryAll(By.css('button'));
+    const deleteButton = buttons.find((button) =>
+        button.nativeElement.textContent.includes('Delete')
+    );
+
+    const componentSpy = jest.spyOn(component, 'delete');
+    const sessionApiSpy = jest
+        .spyOn(sessionApiService, 'delete')
+        .mockImplementation(() => of(true));
+    const matSnackBarSpy = jest.spyOn(snackbar, 'open');
+    const routerSpy = jest
+        .spyOn(router, 'navigate')
+        .mockImplementation(async () => true);
+
+    deleteButton!.nativeElement.click();
+
+    expect(componentSpy).toHaveBeenCalled();
+    expect(sessionApiSpy).toHaveBeenCalled();
+    expect(matSnackBarSpy).toHaveBeenCalled();
+    expect(routerSpy).toHaveBeenCalledWith(['sessions']);
   });
 });
 

@@ -12,8 +12,8 @@ describe('TeacherService', () => {
   const teachers: Teacher[] = [
     {
       id: 1,
-      lastName: 'Doe',
-      firstName: 'John',
+      lastName: 'Ben',
+      firstName: 'Sab',
       createdAt: new Date(),
       updatedAt: new Date(),
     },
@@ -45,7 +45,7 @@ describe('TeacherService', () => {
     service.all().subscribe((response) => {
       expect(response).toBeTruthy();
       expect(response.length).toEqual(2);
-      expect(response[0].firstName).toEqual('John');
+      expect(response[0].firstName).toEqual('Sab');
     });
 
     const request = controller.expectOne('api/teacher');
