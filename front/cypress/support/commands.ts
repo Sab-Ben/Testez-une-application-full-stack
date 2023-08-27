@@ -56,13 +56,7 @@ Cypress.Commands.add(
             },
         });
 
-        cy.intercept(
-            {
-                method: 'GET',
-                url: '/api/session',
-            },
-            [...sessions]
-        ).as('session');
+        cy.intercept('GET', '/api/session', {body : {...sessions}}).as('session');
 
         cy.get('input[formControlName=email]').type(email);
         cy.get('input[formControlName=password]').type(`${password}{enter}{enter}`);

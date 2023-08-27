@@ -1,4 +1,4 @@
-import { sessions, teacherMock, userMock } from '/cypress/mock';
+import { sessions, teacherMock, userMock } from 'cypress/mock';
 
 describe('full client flow', () => {
   // auth
