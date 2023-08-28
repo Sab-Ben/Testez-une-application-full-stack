@@ -45,26 +45,26 @@ public class TeacherControllerIntegrationTest {
     }
 
     @Test
-    public void itShouldGetAllTeachers() throws Exception {
+    public void getAllTeachers() throws Exception {
         mockMvc.perform(get("/api/teacher/").header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].lastName", is("DELAHAYE")) );
     }
 
     @Test
-    public void itShouldGetOneTeacherIfExistent() throws Exception {
+    public void getOneTeacherIfExisting() throws Exception {
         mockMvc.perform(get("/api/teacher/1").header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("lastName", is("DELAHAYE")) );
     }
 
     @Test
-    public void itShoulRespondNotFoundIfTeacherNonExistent() throws Exception {
+    public void respondNotFoundIfTeacherNonExisting() throws Exception {
         mockMvc.perform(get("/api/teacher/154").header("Authorization", token)).andExpect(status().isNotFound());
     }
 
     @Test
-    public void itShouldSendBadRequestIfIdWithWrongFormat() throws Exception {
+    public void sendBadRequestIfIdWithWrongFormat() throws Exception {
         mockMvc.perform(get("/api/teacher/notanumber").header("Authorization", token)).andExpect(status().isBadRequest());
     }
 

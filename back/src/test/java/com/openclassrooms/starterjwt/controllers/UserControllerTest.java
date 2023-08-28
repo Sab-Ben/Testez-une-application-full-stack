@@ -77,39 +77,39 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    public void itShouldFindAnExistingUser() throws Exception {
+    public void findAnExistingUser() throws Exception {
         mockMvc.perform(get("/api/user/1").header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("lastName", is("Admin")));
     }
 
     @Test
-    public void itShouldRespondNotFoundIfTryingToFindNonExistingUser() throws Exception {
+    public void respondNotFoundIfTryingToFindNonExistingUser() throws Exception {
         mockMvc.perform(get("/api/user/10000").header("Authorization", token))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void itShouldThrowBadRequestIfFindingUserWithWrongIdFormat() throws Exception {
+    public void throwBadRequestIfFindingUserWithWrongIdFormat() throws Exception {
         mockMvc.perform(get("/api/user/notavalidid").header("Authorization", token))
                 .andExpect(status().isBadRequest());
     }
 
 
     @Test
-    public void itShouldThrowUnauthorizedIfTryingToDeleteAnotherExistingUser() throws Exception {
+    public void throwUnauthorizedIfTryingToDeleteAnotherExistingUser() throws Exception {
         mockMvc.perform(delete("/api/user/3").header("Authorization", token))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void itShouldThrowNotFoundIfTryingToDeleteNonExistingUser() throws Exception {
+    public void throwNotFoundIfTryingToDeleteNonExistingUser() throws Exception {
         mockMvc.perform(delete("/api/user/10000").header("Authorization", token))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void itShouldThrowBadRequestIfDeletingUserWithWrongIdFormat() throws Exception {
+    public void throwBadRequestIfDeletingUserWithWrongIdFormat() throws Exception {
         mockMvc.perform(delete("/api/user/notavalidid").header("Authorization", token))
                 .andExpect(status().isBadRequest());
     }

@@ -46,27 +46,27 @@ public class SessionControllerIntegrationTest {
     }
 
     @Test
-    public void itShouldGetAllSessions() throws Exception {
+    public void getAllSessions() throws Exception {
         mockMvc.perform(get("/api/session/").header("Authorization",  token)).andExpect(status().isOk());
     }
 
     @Test
-    public void itShouldGetOneSession() throws Exception {
+    public void getSession() throws Exception {
         mockMvc.perform(get("/api/session/1").header("Authorization",  token)).andExpect(status().isOk());
     }
 
     @Test
-    public void itShouldThrowBadRequestExceptionIfIdHasWrongFormat() throws Exception {
+    public void throwBadRequestExceptionIfIdHasWrongFormat() throws Exception {
         mockMvc.perform(get("/api/session/Invalid").header("Authorization",  token)).andExpect(status().isBadRequest());
     }
 
     @Test
-    public void itShouldThrowNotFoundExceptionIfNonExistingSession() throws Exception {
+    public void throwNotFoundExceptionIfNonExistingSession() throws Exception {
         mockMvc.perform(get("/api/session/0").header("Authorization",  token)).andExpect(status().isNotFound());
     }
 
     @Test
-    public void itShouldCreateOneSession() throws Exception {
+    public void createSession() throws Exception {
         String name = "Session Musculation";
         long teacherID = 1L;
         String description = "Rendez vous à la salle à 10h30";
@@ -86,7 +86,7 @@ public class SessionControllerIntegrationTest {
     }
 
     @Test
-    public void itShouldUpdateSession() throws Exception {
+    public void updateSession() throws Exception {
         String name = "Session Musculation Jambes";
         long teacherID = 1L;
         String description = "Rendez vous à la salle à 10h30";
@@ -107,7 +107,7 @@ public class SessionControllerIntegrationTest {
 
 
     @Test
-    public void itShouldThrowAnExceptionWhenUpdatingWithWrongIdFormat() throws Exception {
+    public void throwAnExceptionWhenUpdatingWithWrongIdFormat() throws Exception {
         String name = "Session Musculation Jambes";
         long teacherID = 1L;
         String description = "Rendez vous à la salle à 10h30";
@@ -126,7 +126,7 @@ public class SessionControllerIntegrationTest {
     }
 
     @Test
-    public void itShouldDeleteAnExistingSession() throws Exception {
+    public void deleteIfSessionExisting() throws Exception {
         String name = "Test delete session";
         long teacherID = 1L;
         String description = "Test delete session";
@@ -150,7 +150,7 @@ public class SessionControllerIntegrationTest {
     }
 
     @Test
-    public void itShouldNotDeleteANonExistingSession() throws Exception {
+    public void notDeleteIfSessionNotExisting() throws Exception {
         mockMvc.perform(delete("/api/session/0").header("Authorization",  token)).andExpect(status().isNotFound());
     }
 
@@ -160,22 +160,22 @@ public class SessionControllerIntegrationTest {
     }
 
     @Test
-    public void itShouldParticipate() throws Exception {
+    public void participate() throws Exception {
         mockMvc.perform(post("/api/session/1/participate/1").header("Authorization",  token)).andExpect(status().isOk());
     }
 
     @Test
-    public void itShouldThrowAnExceptionWhenParticipatingWithWrongIdFormat() throws Exception {
+    public void throwAnExceptionWhenParticipatingWithWrongIdFormat() throws Exception {
         mockMvc.perform(post("/api/session/notvalid/participate/1").header("Authorization",  token)).andExpect(status().isBadRequest());
     }
 
     @Test
-    public void itShouldNoLongerParticipate() throws Exception {
+    public void noLongerParticipate() throws Exception {
         mockMvc.perform(delete("/api/session/1/participate/1").header("Authorization",  token)).andExpect((status().isOk()));
     }
 
     @Test
-    public void itShouldThrowAnExceptionWhenNoLongerParticipatingWithWrongIdFormat() throws Exception {
+    public void throwAnExceptionWhenNoLongerParticipatingWithWrongIdFormat() throws Exception {
         mockMvc.perform(delete("/api/session/notValid/participate/1").header("Authorization",  token)).andExpect(status().isBadRequest());
     }
 }

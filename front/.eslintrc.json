@@ -13,7 +13,9 @@
           "tsconfig.json",
           "e2e/tsconfig.json"
         ],
-        "createDefaultProgram": true
+        "createDefaultProgram": true,
+        "sourceType": "module",
+        "allowImportExportEverywhere": true
       },
       "extends": [
         "plugin:@angular-eslint/recommended",

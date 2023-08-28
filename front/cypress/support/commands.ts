@@ -42,7 +42,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
-import { sessions, userSession } from 'cypress/mock';
+import { sessions, userSession } from 'cypress/fixtures';
 
 Cypress.Commands.add(
     'login',

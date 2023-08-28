@@ -1,12 +1,13 @@
-import { sessions, teacherMock, userMock } from 'cypress/mock';
-
 describe('full client flow', () => {
+  before(() => {
+    cy.server();
+  })
   // auth
   it('should register', () => {
     cy.visit('/');
     cy.get('[routerlink]').contains('Register').click();
 
-    cy.intercept('POST', '/api/auth/register', {});
+    cy.route('POST', '/api/auth/register', {});
 
     cy.get('input[formControlName=firstName]').type('firstName');
     cy.get('input[formControlName=lastName]').type('lastName');
@@ -18,38 +19,139 @@ describe('full client flow', () => {
 
   // sessions
   it('should login and see the session list', () => {
-    cy.login('test@test.com', 'test!1234', false);
-    cy.url().should('include', '/sessions');
-    cy.get('.item').should('have.length', 2);
+    cy.visit('/login');
+    cy.server()
+    cy.route('POST', '/api/auth/login', {
+      body: {
+        id: 1,
+        username: 'userName',
+        firstName: 'firstName',
+        lastName: 'lastName',
+        admin: true,
+      },
+    });
+
+    cy.server()
+    cy.route('GET', '/api/session', {
+      body: [
+        {
+          id: 1,
+          name: 'Session 1',
+          description: 'Lorem ipsum dolor sit amet. ' +
+              'Est incidunt omnis aut tenetur quasi ut ullam autem qui sunt iure. ' +
+              'sed impedit quia id fuga galisum. Eum rerum doloribus quo ' +
+              'dolorem culpa est rerum voluptas aut voluptas temporibus aut dolorem minima?',
+          date: new Date(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          teacher_id: 1,
+          users: [1, 2, 3],
+        },
+        {
+          id: 2,
+          name: 'Session 2',
+          description: 'Lorem ipsum dolor sit amet. ' +
+              'Non dicta assumenda qui nobis itaque id nostrum illum sit ' +
+              'omnis excepturi id earum quidem aut assumenda provident rem laborum adipisci. ' +
+              'Sed numquam sunt aut rerum atque qui dolorem voluptatibus non autem labore ' +
+              'At laudantium tempore aut eius atque sed deserunt animi.',
+          date: new Date(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          teacher_id: 1,
+          users: [1, 2, 4],
+        },
+      ],
+    });
+    cy.get('input[formControlName=email]').type('yoga@studio.com');
+    cy.get('input[formControlName=password]').type(`${'test!1234'}{enter}{enter}`);
+    cy.url().should('include', '/sessions')
   });
 
   it('should see the details of a session', () => {
-    cy.intercept('GET', '/api/session/1', {
-      body: sessions[0],
+    cy.route('GET', '/api/session/1', {
+      body: {
+        id: 1,
+        name: 'Session 1',
+        description: 'Lorem ipsum dolor sit amet. ' +
+            'Est incidunt omnis aut tenetur quasi ut ullam autem qui sunt iure. ' +
+            'sed impedit quia id fuga galisum. Eum rerum doloribus quo ' +
+            'dolorem culpa est rerum voluptas aut voluptas temporibus aut dolorem minima?',
+        date: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        teacher_id: 1,
+        users: [1, 2, 3]
+      },
     }).as('session');
 
-    cy.intercept('GET', '/api/teacher/1', {
-      body: teacherMock,
+    cy.route('GET', '/api/teacher/1', {
+      body:{
+        id: 1,
+        lastName: 'Ben',
+        firstName: 'Sab',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        },
     }).as('teacher');
 
-    cy.intercept('GET', '/api/session', {
-      body: sessions,
+    cy.route('GET', '/api/session', {
+      body: [
+        {
+          id: 1,
+          name: 'Session 1',
+          description: 'Lorem ipsum dolor sit amet. ' +
+              'Est incidunt omnis aut tenetur quasi ut ullam autem qui sunt iure. ' +
+              'sed impedit quia id fuga galisum. Eum rerum doloribus quo ' +
+              'dolorem culpa est rerum voluptas aut voluptas temporibus aut dolorem minima?',
+          date: new Date(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          teacher_id: 1,
+          users: [1, 2, 3],
+        },
+        {
+          id: 2,
+          name: 'Session 2',
+          description: 'Lorem ipsum dolor sit amet. ' +
+              'Non dicta assumenda qui nobis itaque id nostrum illum sit ' +
+              'omnis excepturi id earum quidem aut assumenda provident rem laborum adipisci. ' +
+              'Sed numquam sunt aut rerum atque qui dolorem voluptatibus non autem labore ' +
+              'At laudantium tempore aut eius atque sed deserunt animi.',
+          date: new Date(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          teacher_id: 1,
+          users: [1, 2, 4],
+        },
+      ]
     }).as('sessions');
 
     cy.get('mat-card-actions button').first().click();
     cy.url().should('include', '/sessions/detail/1');
-    cy.get('h1').should('contain', sessions[0].name);
-    cy.get('div.description').should('contain', sessions[0].description);
-    cy.get('mat-card-subtitle').should(
-        'contain',
-        `${teacherMock.firstName} ${teacherMock.lastName.toUpperCase()}`
-    );
+    cy.get('h1').contains('Session 1');
+    cy.get('div.description').contains('Lorem ipsum dolor sit amet. ' +
+        'Est incidunt omnis aut tenetur quasi ut ullam autem qui sunt iure. ' +
+        'sed impedit quia id fuga galisum. Eum rerum doloribus quo ' +
+        'dolorem culpa est rerum voluptas aut voluptas temporibus aut dolorem minima?');
+    cy.get('mat-card-subtitle').contains('Sab BEN')
   });
 
   it('should unenroll from a session', () => {
-    cy.intercept('DELETE', '/api/session/1/participate/1', {});
-    cy.intercept('GET', '/api/session/1', {
-      body: { ...sessions[0], users: [2, 3] },
+    cy.route('DELETE', '/api/session/1/participate/1', {});
+    cy.route('GET', '/api/session/1', {
+      body: {
+        id: 1,
+        name: 'Session 1',
+        description: 'Lorem ipsum dolor sit amet. ' +
+            'Est incidunt omnis aut tenetur quasi ut ullam autem qui sunt iure. ' +
+            'sed impedit quia id fuga galisum. Eum rerum doloribus quo ' +
+            'dolorem culpa est rerum voluptas aut voluptas temporibus aut dolorem minima?',
+        date: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        teacher_id: 1,
+        users: [1, 2, 3], },
     }).as('session');
 
     cy.get('button').contains('Do not participate').should('exist');
@@ -62,9 +164,21 @@ describe('full client flow', () => {
   });
 
   it('should enroll to a session', () => {
-    cy.intercept('POST', '/api/session/1/participate/1', {});
-    cy.intercept('GET', '/api/session/1', {
-      body: { ...sessions[0], users: [1, 2, 3] },
+    cy.route('POST', '/api/session/1/participate/1', {});
+    cy.route('GET', '/api/session/1', {
+      body: {
+        id: 1,
+        name: 'Session 1',
+        description: 'Lorem ipsum dolor sit amet. ' +
+            'Est incidunt omnis aut tenetur quasi ut ullam autem qui sunt iure. ' +
+            'sed impedit quia id fuga galisum. Eum rerum doloribus quo ' +
+            'dolorem culpa est rerum voluptas aut voluptas temporibus aut dolorem minima?',
+        date: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        teacher_id: 1,
+        users: [1, 2, 3],
+      },
     }).as('session');
 
     cy.get('button').contains('Participate').should('exist');
@@ -76,15 +190,21 @@ describe('full client flow', () => {
     cy.get('div').contains('attendees').should('contain', '3');
   });
 
-  it('should come back tot the sessions list', () => {
+  it('should come back to the sessions list', () => {
     cy.get('button').first().click();
     cy.url().should('include', '/sessions');
   });
 
   // Account page
   it('should visit the account page', () => {
-    cy.intercept('GET', '/api/user/1', {
-      ...userMock,
+    cy.route('GET', '/api/user/1', {
+      id: 1,
+      email: 'mock@test.com',
+      lastName: 'Test',
+      firstName: 'Toto',
+      admin: false,
+      password: '15973',
+      createdAt: new Date(),
     });
 
     cy.get('.link').contains('Account').click();
@@ -109,21 +229,49 @@ describe('full client flow', () => {
 });
 
 describe('admin flow', () => {
-  // auth
+
   it('should login as admin', () => {
     cy.visit('/login');
-    cy.login('admin@admin.com', 'admin!1234', true);
+    cy.server();
+    cy.route('POST', '/api/auth/login', {
+      body: {
+        id: 1,
+        username: 'userName',
+        firstName: 'firstName',
+        lastName: 'lastName',
+        admin: true
+      },
+    })
+
+    cy.route('GET', '/api/session', []).as('session')
+    cy.get('input[formControlName=email]').type("yoga@studio.com")
+    cy.get('input[formControlName=password]').type(`${"test!1234"}{enter}{enter}`)
     cy.url().should('include', '/sessions');
   });
 
   it('creates a new session', () => {
-    cy.intercept('GET', '/api/teacher', {
-      body: [teacherMock],
+    cy.route('GET', '/api/teacher', {
+      body: [
+        {
+          id: 1,
+          lastName: 'Ben',
+          firstName: 'Sab',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: 2,
+          lastName: 'Doe',
+          firstName: 'Jane',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }
+      ]
     });
     cy.get('button').contains('Create').click();
     cy.url().should('include', '/sessions/create');
 
-    cy.intercept('POST', '/api/session', {
+    cy.route('POST', '/api/session', {
       body: {
         id: 3,
         name: 'New session',
@@ -133,9 +281,35 @@ describe('admin flow', () => {
       },
     }).as('session');
 
-    cy.intercept('GET', '/api/session', {
+    cy.route('GET', '/api/session', {
       body: [
-        ...sessions,
+        {
+          id: 1,
+          name: 'Session 1',
+          description: 'Lorem ipsum dolor sit amet. ' +
+              'Est incidunt omnis aut tenetur quasi ut ullam autem qui sunt iure. ' +
+              'sed impedit quia id fuga galisum. Eum rerum doloribus quo ' +
+              'dolorem culpa est rerum voluptas aut voluptas temporibus aut dolorem minima?',
+          date: new Date(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          teacher_id: 1,
+          users: [1, 2, 3],
+        },
+        {
+          id: 2,
+          name: 'Session 2',
+          description: 'Lorem ipsum dolor sit amet. ' +
+              'Non dicta assumenda qui nobis itaque id nostrum illum sit ' +
+              'omnis excepturi id earum quidem aut assumenda provident rem laborum adipisci. ' +
+              'Sed numquam sunt aut rerum atque qui dolorem voluptatibus non autem labore ' +
+              'At laudantium tempore aut eius atque sed deserunt animi.',
+          date: new Date(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          teacher_id: 1,
+          users: [1, 2, 4],
+        },
         {
           id: 3,
           name: 'New session',
@@ -166,7 +340,7 @@ describe('admin flow', () => {
 
   // Continuer ?
   it('should see the details of the new session', () => {
-    cy.intercept('GET', '/api/session/3', {
+    cy.route('GET', '/api/session/3', {
       body: {
         id: 3,
         name: 'New session',
@@ -176,8 +350,14 @@ describe('admin flow', () => {
       },
     }).as('session');
 
-    cy.intercept('GET', '/api/teacher/1', {
-      body: teacherMock,
+    cy.route('GET', '/api/teacher/1', {
+      body: {
+        id: 1,
+        lastName: 'Ben',
+        firstName: 'Sab',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     }).as('teacher');
 
     cy.get('mat-card').last().contains('Detail').last().click();
@@ -187,9 +367,35 @@ describe('admin flow', () => {
   });
 
   it("should delete the new session and see it doesn't exist anymore", () => {
-    cy.intercept('DELETE', '/api/session/3', {});
-    cy.intercept('GET', '/api/session', {
-      body: sessions,
+    cy.route('DELETE', '/api/session/3', {});
+    cy.route('GET', '/api/session', {
+      body: [{
+        id: 1,
+        name: 'Session 1',
+        description: 'Lorem ipsum dolor sit amet. ' +
+            'Est incidunt omnis aut tenetur quasi ut ullam autem qui sunt iure. ' +
+            'sed impedit quia id fuga galisum. Eum rerum doloribus quo ' +
+            'dolorem culpa est rerum voluptas aut voluptas temporibus aut dolorem minima?',
+        date: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        teacher_id: 1,
+        users: [1, 2, 3],
+        },
+        {
+          id: 2,
+          name: 'Session 2',
+          description: 'Lorem ipsum dolor sit amet. ' +
+              'Non dicta assumenda qui nobis itaque id nostrum illum sit ' +
+              'omnis excepturi id earum quidem aut assumenda provident rem laborum adipisci. ' +
+              'Sed numquam sunt aut rerum atque qui dolorem voluptatibus non autem labore ' +
+              'At laudantium tempore aut eius atque sed deserunt animi.',
+          date: new Date(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          teacher_id: 1,
+          users: [1, 2, 4],
+        },],
     }).as('sessions');
 
     cy.get('button').contains('Delete').click();

@@ -30,7 +30,7 @@ public class AuthControllerIntegrationTest {
     MockMvc mockMvc;
 
     @Test
-    public void itShouldLogin() throws Exception {
+    public void login() throws Exception {
         String email = "yoga@studio.com";
         String password = "test!1234";
         String requestBody = "{\"email\": \"" + email + "\", \"password\": \"" + password + "\"}";
@@ -42,9 +42,9 @@ public class AuthControllerIntegrationTest {
     }
 
     @Test
-    public void itShouldRefuseLoginWithInvalidCredentials() throws Exception {
+    public void refuseToLoginWithInvalidInformation() throws Exception {
         String email = "notauser@test.fr";
-        String password = "invalidcred";
+        String password = "invalidinfo";
         String requestBody = "{\"email\": \"" + email + "\", \"password\": \"" + password + "\"}";
 
         mockMvc.perform(post("/api/auth/login")
@@ -54,7 +54,7 @@ public class AuthControllerIntegrationTest {
     }
 
     @Test
-    public void itShouldRegister() throws Exception {
+    public void register() throws Exception {
         String email =  "test@test.com";
         String password ="test!1234";
         String lastName  ="admin";
@@ -74,7 +74,7 @@ public class AuthControllerIntegrationTest {
     }
 
     @Test
-    public void itShouldNotRegisterAnExistingUser() throws Exception {
+    public void notRegisterIfUserExisting() throws Exception {
         String email =  "yoga@studio.com";
         String password = "test!1234";
         String lastName = "admin";
