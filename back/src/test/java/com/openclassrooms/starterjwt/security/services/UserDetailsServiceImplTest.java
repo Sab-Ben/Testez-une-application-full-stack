@@ -29,8 +29,8 @@ class UserDetailsServiceImplTest {
     }
 
     @Test
-    void loadUserByUsername() {
-        //Given
+    void testLoadUserByUsername() {
+
         user = new User();
         user.setEmail("sab_ben@gmail.com");
         user.setFirstName("Sab");
@@ -38,9 +38,9 @@ class UserDetailsServiceImplTest {
         user.setPassword("password");
         user.setAdmin(true);
         when(userRepository.findByEmail("sab_ben@gmail.com")).thenReturn(java.util.Optional.of(user));
-        //When
+
         UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername("sab_ben@gmail.com");
-        //Then
+
         assertEquals(userDetails.getUsername(), user.getEmail());
         assertEquals(userDetails.getFirstName(), user.getFirstName());
         assertEquals(userDetails.getLastName(), user.getLastName());
@@ -48,7 +48,7 @@ class UserDetailsServiceImplTest {
     }
 
     @Test
-    void loadUserByUsername_KO() {
+    void testLoadUserByUsername_KO() {
         assertThrows(UsernameNotFoundException.class, () -> {
             userDetailsService.loadUserByUsername("sab_ben@gmail.com");
         });

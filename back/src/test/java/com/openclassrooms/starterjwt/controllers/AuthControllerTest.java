@@ -30,7 +30,7 @@ public class AuthControllerTest {
     MockMvc mockMvc;
 
     @Test
-    public void login() throws Exception {
+    public void testLogin() throws Exception {
         String email = "yoga@studio.com";
         String password = "test!1234";
         String requestBody = "{\"email\": \"" + email + "\", \"password\": \"" + password + "\"}";
@@ -42,7 +42,7 @@ public class AuthControllerTest {
     }
 
     @Test
-    public void refuseToLoginWithInvalidInformation() throws Exception {
+    public void testLoginWithInvalidInformation() throws Exception {
         String email = "notauser@test.fr";
         String password = "invalidinfo";
         String requestBody = "{\"email\": \"" + email + "\", \"password\": \"" + password + "\"}";
@@ -54,7 +54,7 @@ public class AuthControllerTest {
     }
 
     @Test
-    public void register() throws Exception {
+    public void testRegister() throws Exception {
         String email =  "test@test.com";
         String password ="test!1234";
         String lastName  ="admin";
@@ -74,7 +74,7 @@ public class AuthControllerTest {
     }
 
     @Test
-    public void notRegisterIfUserExisting() throws Exception {
+    public void testNotRegisterIfUserExisting() throws Exception {
         String email =  "yoga@studio.com";
         String password = "test!1234";
         String lastName = "admin";
@@ -94,7 +94,7 @@ public class AuthControllerTest {
 
 
     @AfterAll
-    public void cleanup() throws Exception{
+    public void testCleanup() throws Exception{
         String email =  "test@test.com";
         String password ="test!1234";
         String loginRequest = "{\"email\": \"" + email + "\", \"password\": \"" + password + "\"}";

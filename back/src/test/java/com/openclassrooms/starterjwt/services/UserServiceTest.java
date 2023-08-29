@@ -41,7 +41,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void findIfUserExisting(){
+    public void testFindIfUserExisting(){
         long testedId = 1;
         User expectedUser = users.get(0);
 
@@ -53,13 +53,13 @@ public class UserServiceTest {
     }
 
     @Test
-    public void notFindIfUserNotExisting(){
+    public void testNotFindIfUserNotExisting(){
         given(userRepository.findById(10L)).willReturn(Optional.empty());
         assertThat( userService.findById(10L)).isNull();
     }
 
     @Test
-    public void deleteUser(){
+    public void testDeleteUser(){
         userService.delete(1L);
         verify(userRepository).deleteById(1L);
     }

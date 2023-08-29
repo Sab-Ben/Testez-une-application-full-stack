@@ -33,7 +33,7 @@ public class UserControllerTest {
     private int testUserId;
 
     @BeforeAll
-    public void getToken() throws Exception {
+    public void testGetToken() throws Exception {
         String email = "yoga@studio.com";
         String password = "test!1234";
         String requestBody = "{\"email\": \"" + email + "\", \"password\": \"" + password + "\"}";
@@ -47,7 +47,7 @@ public class UserControllerTest {
     }
 
     @BeforeAll
-    public void createUser() throws Exception {
+    public void testCreateUser() throws Exception {
         String email = "test@test.com";
         String password = "test!1234";
         String lastName = "admin";
@@ -77,45 +77,45 @@ public class UserControllerTest {
     }
 
     @Test
-    public void findIfUserAlreadyExisting() throws Exception {
+    public void testFindIfUserAlreadyExisting() throws Exception {
         mockMvc.perform(get("/api/user/1").header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("lastName", is("Admin")));
     }
 
     @Test
-    public void respondNotFoundIfTryingToFindNonExistingUser() throws Exception {
+    public void testRespondNotFoundIfTryingToFindNonExistingUser() throws Exception {
         mockMvc.perform(get("/api/user/10000").header("Authorization", token))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void throwBadRequestIfFindingUserWithWrongIdFormat() throws Exception {
+    public void testThrowBadRequestIfFindingUserWithWrongIdFormat() throws Exception {
         mockMvc.perform(get("/api/user/notavalidid").header("Authorization", token))
                 .andExpect(status().isBadRequest());
     }
 
 
     @Test
-    public void throwUnauthorizedIfTryingToDeleteAnotherExistingUser() throws Exception {
+    public void testThrowUnauthorizedIfTryingToDeleteAnotherExistingUser() throws Exception {
         mockMvc.perform(delete("/api/user/3").header("Authorization", token))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
-    public void throwNotFoundIfTryingToDeleteNonExistingUser() throws Exception {
+    public void testThrowNotFoundIfTryingToDeleteNonExistingUser() throws Exception {
         mockMvc.perform(delete("/api/user/10000").header("Authorization", token))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    public void throwBadRequestIfDeletingUserWithWrongIdFormat() throws Exception {
+    public void testThrowBadRequestIfDeletingUserWithWrongIdFormat() throws Exception {
         mockMvc.perform(delete("/api/user/notavalidid").header("Authorization", token))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void deleteUser() throws Exception {
+    public void testDeleteUser() throws Exception {
         mockMvc.perform(delete("/api/user/" + testUserId).header("Authorization", testUserToken)).andExpect(status().isOk());
     }
 }

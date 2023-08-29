@@ -36,7 +36,7 @@ public class TeacherServiceTest {
     }
 
     @Test
-    public void getAllTeachers(){
+    public void testGetAllTeachers(){
         given(teacherRepository.findAll()).willReturn(teacherList);
         List<Teacher> teachers = teacherService.findAll();
 
@@ -46,7 +46,7 @@ public class TeacherServiceTest {
     }
 
     @Test
-    public void getTeacherIfExisting(){
+    public void testGetTeacherIfExisting(){
         Teacher expectedTeacher = teacherList.get(0);
         given(teacherRepository.findById((long)1)).willReturn(Optional.ofNullable(expectedTeacher));
 
@@ -57,7 +57,7 @@ public class TeacherServiceTest {
     }
 
     @Test
-    public void notGetIfTeacherNotExisting(){
+    public void testNotGetIfTeacherNotExisting(){
         long testedIndex = 3;
         Optional<Teacher> expectedTeacher = Optional.empty();
         given(teacherRepository.findById(testedIndex)).willReturn((expectedTeacher));

@@ -31,7 +31,7 @@ public class TeacherControllerTest {
     private String token;
 
     @BeforeAll
-    public void getToken() throws Exception {
+    public void testGetToken() throws Exception {
         String email = "yoga@studio.com";
         String password = "test!1234";
         String requestBody = "{\"email\": \"" + email + "\", \"password\": \"" + password + "\"}";
@@ -45,26 +45,26 @@ public class TeacherControllerTest {
     }
 
     @Test
-    public void getAllTeachers() throws Exception {
+    public void testGetAllTeachers() throws Exception {
         mockMvc.perform(get("/api/teacher/").header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].lastName", is("DELAHAYE")) );
     }
 
     @Test
-    public void getOneTeacherIfExisting() throws Exception {
+    public void testGetOneTeacherIfExisting() throws Exception {
         mockMvc.perform(get("/api/teacher/1").header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("lastName", is("DELAHAYE")) );
     }
 
     @Test
-    public void respondNotFoundIfTeacherNonExisting() throws Exception {
+    public void testRespondNotFoundIfTeacherNonExisting() throws Exception {
         mockMvc.perform(get("/api/teacher/154").header("Authorization", token)).andExpect(status().isNotFound());
     }
 
     @Test
-    public void sendBadRequestIfIdWithWrongFormat() throws Exception {
+    public void testSendBadRequestIfIdWithWrongFormat() throws Exception {
         mockMvc.perform(get("/api/teacher/notanumber").header("Authorization", token)).andExpect(status().isBadRequest());
     }
 

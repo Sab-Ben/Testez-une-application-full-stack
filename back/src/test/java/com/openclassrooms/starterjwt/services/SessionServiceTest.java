@@ -40,114 +40,6 @@ public class SessionServiceTest {
 
     private List<Session> sessionList;
 
-    @Test
-    public void findAllSessions() {
-        given(sessionRepository.findAll()).willReturn(sessionList);
-        List<Session> receivedSessions = sessionService.findAll();
-
-        assertThat(receivedSessions).isEqualTo(sessionList);
-    }
-
-    @Test
-    public void findSession() {
-        long testedId = 1;
-        Optional<Session> expectedSession = Optional.of(sessionList.get(0));
-        given(sessionRepository.findById(testedId)).willReturn(expectedSession);
-        Session receivedSession = sessionService.getById(testedId);
-
-        assertThat(receivedSession).isEqualTo(sessionList.get(0));
-    }
-
-    @Test
-    public void createSession(){
-        Session session = new Session();
-        given(sessionRepository.save(session)).willReturn(session);
-        Session receivedSession = sessionService.create(session);
-
-        assertThat(receivedSession).isEqualTo(session);
-    }
-
-    @Test
-    public void updateSession(){
-        Session session = sessionList.get(0);
-        session.setName("Test");
-        session.setDescription("Description Test");
-        given(sessionRepository.save(session)).willReturn(sessionList.get(0));
-        Session received = sessionService.update((long)1, session);
-        assertThat(received).isEqualTo(session);
-    }
-
-    @Test
-    public void callTheDeleteMethod(){
-        sessionService.delete((long) 10);
-        verify(sessionRepository).deleteById(10L);
-    }
-
-    @Test
-    public void itShouldThrowNotFoundWhenParticipatingToUnkownSession() {
-        long sessionId = 5;
-        long userId = 4;
-        given(sessionRepository.findById(sessionId)).willReturn(Optional.empty());
-        Assertions.assertThrows(NotFoundException.class, () -> sessionService.participate(sessionId, userId));
-    }
-
-    @Test
-    public void itShouldThrowNotFoundWhenUserDoesNotExist(){
-        long sessionId = 5;
-        long userId = 4;
-        given(sessionRepository.findById(sessionId)).willReturn(Optional.ofNullable(sessionList.get(0)));
-        given(userRepository.findById(userId)).willReturn(Optional.empty());
-        Assertions.assertThrows(NotFoundException.class, () -> sessionService.participate(sessionId, userId));
-    }
-
-    @Test
-    public void itShouldThrowBadRequestIfUserAlreadyParticipates(){
-        long sessionId = 5;
-        long userId = 1;
-        given(sessionRepository.findById(sessionId)).willReturn(Optional.ofNullable(sessionList.get(0)));
-        given(userRepository.findById(userId)).willReturn(Optional.of(new User()));
-        Assertions.assertThrows(BadRequestException.class, () -> sessionService.participate(sessionId, userId));
-    }
-
-    @Test
-    public void itShouldAddANewParticipant(){
-        long sessionId = 5;
-        long userId = 10;
-        int previousSize = sessionList.get(0).getUsers().size();
-        given(sessionRepository.findById(sessionId)).willReturn(Optional.ofNullable(sessionList.get(0)));
-        given(userRepository.findById(userId)).willReturn(Optional.of(new User()));
-        sessionService.participate(sessionId, userId);
-
-        assertThat(sessionList.get(0).getUsers().size()).isEqualTo(previousSize + 1);
-    }
-
-    @Test
-    public void itShouldThrowNotFoundErrorWhenUnsubscribingFromNonExistingSession(){
-        long sessionId = 5;
-        long userId = 1;
-        given(sessionRepository.findById(sessionId)).willReturn(Optional.empty());
-        Assertions.assertThrows(NotFoundException.class, () -> sessionService.noLongerParticipate(sessionId, userId));
-    }
-
-    @Test
-    public void  itShouldThrowBadRequestExceptionWhenUserAlreadyDoesNotParticipate(){
-        long sessionId = 5;
-        long userId = 3;
-        given(sessionRepository.findById(sessionId)).willReturn(Optional.ofNullable(sessionList.get(0)));
-        Assertions.assertThrows(BadRequestException.class, () -> sessionService.noLongerParticipate(sessionId, userId));
-    }
-
-    @Test
-    public void ItShouldRemoveAUserFromASession(){
-        long sessionId = 1;
-        long userId = 1;
-        int previousSize = sessionList.get(0).getUsers().size();
-        given(sessionRepository.findById(sessionId)).willReturn(Optional.ofNullable(sessionList.get(0)));
-        sessionService.noLongerParticipate(sessionId, userId);
-
-        assertThat(sessionList.get(0).getUsers().size()).isEqualTo(previousSize -1 );
-    }
-
     @BeforeEach
     public void setup() {
         this.sessionList = new ArrayList<>();
@@ -164,6 +56,113 @@ public class SessionServiceTest {
         sessionList.add(new Session((long)1 , "Session 1", new Date(), "Super Session de sport", t, users, LocalDateTime.parse("2024-04-10T12:00:00"),LocalDateTime.parse("2024-04-10T12:00:00") ));
         sessionList.add(new Session((long)2 , "Session 2", new Date(), "Super Session de sport 2", t, users, LocalDateTime.parse("2024-04-10T12:00:00"),LocalDateTime.parse("2024-04-10T12:00:00") ));
 
+    }
+    @Test
+    public void testFindAllSessions() {
+        given(sessionRepository.findAll()).willReturn(sessionList);
+        List<Session> receivedSessions = sessionService.findAll();
+
+        assertThat(receivedSessions).isEqualTo(sessionList);
+    }
+
+    @Test
+    public void testFindSession() {
+        long testedId = 1;
+        Optional<Session> expectedSession = Optional.of(sessionList.get(0));
+        given(sessionRepository.findById(testedId)).willReturn(expectedSession);
+        Session receivedSession = sessionService.getById(testedId);
+
+        assertThat(receivedSession).isEqualTo(sessionList.get(0));
+    }
+
+    @Test
+    public void testCreateSession(){
+        Session session = new Session();
+        given(sessionRepository.save(session)).willReturn(session);
+        Session receivedSession = sessionService.create(session);
+
+        assertThat(receivedSession).isEqualTo(session);
+    }
+
+    @Test
+    public void testUpdateSession(){
+        Session session = sessionList.get(0);
+        session.setName("Test");
+        session.setDescription("Description Test");
+        given(sessionRepository.save(session)).willReturn(sessionList.get(0));
+        Session received = sessionService.update((long)1, session);
+        assertThat(received).isEqualTo(session);
+    }
+
+    @Test
+    public void testCallTheDeleteMethod(){
+        sessionService.delete((long) 10);
+        verify(sessionRepository).deleteById(10L);
+    }
+
+    @Test
+    public void testThrowNotFoundWhenParticipatingToUnkownSession() {
+        long sessionId = 5;
+        long userId = 4;
+        given(sessionRepository.findById(sessionId)).willReturn(Optional.empty());
+        Assertions.assertThrows(NotFoundException.class, () -> sessionService.participate(sessionId, userId));
+    }
+
+    @Test
+    public void testThrowNotFoundWhenUserDoesNotExist(){
+        long sessionId = 5;
+        long userId = 4;
+        given(sessionRepository.findById(sessionId)).willReturn(Optional.ofNullable(sessionList.get(0)));
+        given(userRepository.findById(userId)).willReturn(Optional.empty());
+        Assertions.assertThrows(NotFoundException.class, () -> sessionService.participate(sessionId, userId));
+    }
+
+    @Test
+    public void testThrowBadRequestIfUserAlreadyParticipates(){
+        long sessionId = 5;
+        long userId = 1;
+        given(sessionRepository.findById(sessionId)).willReturn(Optional.ofNullable(sessionList.get(0)));
+        given(userRepository.findById(userId)).willReturn(Optional.of(new User()));
+        Assertions.assertThrows(BadRequestException.class, () -> sessionService.participate(sessionId, userId));
+    }
+
+    @Test
+    public void testAddParticipant(){
+        long sessionId = 5;
+        long userId = 10;
+        int previousSize = sessionList.get(0).getUsers().size();
+        given(sessionRepository.findById(sessionId)).willReturn(Optional.ofNullable(sessionList.get(0)));
+        given(userRepository.findById(userId)).willReturn(Optional.of(new User()));
+        sessionService.participate(sessionId, userId);
+
+        assertThat(sessionList.get(0).getUsers().size()).isEqualTo(previousSize + 1);
+    }
+
+    @Test
+    public void testThrowNotFoundErrorWhenUnsubscribingFromNonExistingSession(){
+        long sessionId = 5;
+        long userId = 1;
+        given(sessionRepository.findById(sessionId)).willReturn(Optional.empty());
+        Assertions.assertThrows(NotFoundException.class, () -> sessionService.noLongerParticipate(sessionId, userId));
+    }
+
+    @Test
+    public void testThrowBadRequestExceptionWhenUserAlreadyDoesNotParticipate(){
+        long sessionId = 5;
+        long userId = 3;
+        given(sessionRepository.findById(sessionId)).willReturn(Optional.ofNullable(sessionList.get(0)));
+        Assertions.assertThrows(BadRequestException.class, () -> sessionService.noLongerParticipate(sessionId, userId));
+    }
+
+    @Test
+    public void testRemoveAUserFromASession(){
+        long sessionId = 1;
+        long userId = 1;
+        int previousSize = sessionList.get(0).getUsers().size();
+        given(sessionRepository.findById(sessionId)).willReturn(Optional.ofNullable(sessionList.get(0)));
+        sessionService.noLongerParticipate(sessionId, userId);
+
+        assertThat(sessionList.get(0).getUsers().size()).isEqualTo(previousSize -1 );
     }
 
 }
