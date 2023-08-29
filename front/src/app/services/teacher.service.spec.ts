@@ -54,7 +54,7 @@ describe('TeacherService', () => {
     request.flush(teachers);
   });
 
-  it('should get one teacher that exists', () => {
+  it('should get teacher', () => {
     service.detail('1').subscribe((response) => {
       expect(response).toBeTruthy();
       expect(response.id).toBe(1);

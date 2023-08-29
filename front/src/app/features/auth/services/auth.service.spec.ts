@@ -20,7 +20,7 @@ describe('AuthService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('unit tests register', () => {
+  it('should unit tests to register', () => {
     const form: RegisterRequest = {
       email: 'toto@test.com',
       password: '15973',
@@ -38,7 +38,7 @@ describe('AuthService', () => {
     request.flush({});
   });
 
-  it('unit tests login', () => {
+  it('should unit tests to login', () => {
     const form = {
       email: 'toto@test.com',
       password: '15973',

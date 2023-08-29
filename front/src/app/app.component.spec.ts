@@ -40,12 +40,12 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should have a logged header if user is logged', () => {
+  it('should have a logged header', () => {
     const links = fixture.nativeElement.querySelectorAll('span.link');
     expect(links.length).toBe(3);
   });
 
-  it('should have a not logged header if user is not logged', () => {
+  it('should have a not logged header', () => {
     TestBed.inject(SessionService).$isLogged = () => of(false);
 
     fixture.detectChanges();
@@ -53,7 +53,7 @@ describe('AppComponent', () => {
     expect(links.length).toBe(2);
   });
 
-  it("should logout when user clicks on 'logout' button", () => {
+  it("should logout", () => {
     const spy = jest.spyOn(component, 'logout');
     const logOutSpan = fixture.nativeElement.querySelectorAll('span.link')[2];
     logOutSpan.click();

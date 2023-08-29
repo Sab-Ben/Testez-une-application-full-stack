@@ -23,7 +23,7 @@ describe('UserService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should get a user by id', () => {
+  it('should get user by id', () => {
     service.getById('1').subscribe((response) => {
       expect(response).toBeTruthy();
       expect(response.id).toBe(1);
@@ -43,7 +43,7 @@ describe('UserService', () => {
     });
   });
 
-  it('should delete a user', () => {
+  it('should delete', () => {
     service.delete('1').subscribe((response) => {
       expect(response).toBe(undefined);
     });

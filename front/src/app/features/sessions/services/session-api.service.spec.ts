@@ -48,7 +48,7 @@ describe('SessionsService', () => {
     request.flush(sessions);
   });
 
-  it('should get one session that exists', () => {
+  it('should get session', () => {
     service.detail('1').subscribe((response) => {
       expect(response).toBeTruthy();
       expect(response.id).toBe(1);
@@ -61,7 +61,7 @@ describe('SessionsService', () => {
     request.flush(sessions[0]);
   });
 
-  it('should delete one session that exists', () => {
+  it('should delete session', () => {
     service.delete('1').subscribe((response) => {
       expect(response).toBeUndefined();
     });
@@ -72,7 +72,7 @@ describe('SessionsService', () => {
     request.flush({});
   });
 
-  it('should create a session', () => {
+  it('should create session', () => {
     const newSession: Session = {
       name: 'Session 3',
       description: 'Session 3 description',
@@ -93,7 +93,7 @@ describe('SessionsService', () => {
     request.flush(newSession);
   });
 
-  it('should update a session that exists', () => {
+  it('should update a session', () => {
     const updatedSession: Session = {
       id: 1,
       name: 'Session 1 Update',
@@ -128,7 +128,7 @@ describe('SessionsService', () => {
     request.flush({});
   });
 
-  it('should allow a user to no longer participate', () => {
+  it('should allow a user to to stop participating', () => {
     service.unParticipate('1', '1').subscribe((response) => {
       expect(response).toBeUndefined();
     });

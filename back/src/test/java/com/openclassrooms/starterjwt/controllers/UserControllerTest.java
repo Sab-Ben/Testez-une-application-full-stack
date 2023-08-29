@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class UserControllerIntegrationTest {
+public class UserControllerTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -33,7 +33,7 @@ public class UserControllerIntegrationTest {
     private int testUserId;
 
     @BeforeAll
-    public void getFirstAccToken() throws Exception {
+    public void getToken() throws Exception {
         String email = "yoga@studio.com";
         String password = "test!1234";
         String requestBody = "{\"email\": \"" + email + "\", \"password\": \"" + password + "\"}";
@@ -47,7 +47,7 @@ public class UserControllerIntegrationTest {
     }
 
     @BeforeAll
-    public void createTestUser() throws Exception {
+    public void createUser() throws Exception {
         String email = "test@test.com";
         String password = "test!1234";
         String lastName = "admin";
@@ -77,7 +77,7 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    public void findAnExistingUser() throws Exception {
+    public void findIfUserAlreadyExisting() throws Exception {
         mockMvc.perform(get("/api/user/1").header("Authorization", token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("lastName", is("Admin")));
@@ -115,7 +115,7 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    public void itShouldDeleteTheUser() throws Exception {
+    public void deleteUser() throws Exception {
         mockMvc.perform(delete("/api/user/" + testUserId).header("Authorization", testUserToken)).andExpect(status().isOk());
     }
 }

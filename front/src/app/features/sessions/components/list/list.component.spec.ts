@@ -97,7 +97,7 @@ describe('ListComponent', () => {
     );
   });
 
-  it('should have a Create Button if the user if admin', () => {
+  it('should have a create button', () => {
     expect(component.user?.admin).toBeTruthy();
 
     const compiled = fixture.nativeElement;
@@ -107,7 +107,7 @@ describe('ListComponent', () => {
     expect(createButton.textContent).toContain('Create');
   });
 
-  it('should not have a Create Button if the user if not admin', () => {
+  it('should not have a create button', () => {
     component.user!.admin = false;
     fixture.detectChanges();
 
@@ -119,7 +119,7 @@ describe('ListComponent', () => {
     expect(createButton).toBeFalsy();
   });
 
-  it('should have an Edit and a Detail button on a card if the user is admin', () => {
+  it('should have an edit and detail button', () => {
     const compiled = fixture.nativeElement;
     const card = compiled.querySelector('mat-card.item');
     const cardButtons = card.querySelectorAll('mat-card-actions button');
@@ -129,7 +129,7 @@ describe('ListComponent', () => {
     expect(cardButtons[1].textContent).toContain('Edit');
   });
 
-  it('should only have a Detail button on a card if the user is not admin', () => {
+  it('should have a detail button', () => {
     component.user!.admin = false;
     fixture.detectChanges();
 

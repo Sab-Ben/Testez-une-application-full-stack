@@ -56,7 +56,7 @@ describe('LoginComponent', () => {
     expect(password).toBeTruthy();
   });
 
-  it('should change appearance when an input is blurred without value inside it', () => {
+  it('should change when an input is not empty', () => {
     const formElement: HTMLElement = fixture.nativeElement;
     const email = formElement.querySelector('input[formControlName="email"]');
 
@@ -73,7 +73,7 @@ describe('LoginComponent', () => {
     expect(password!.classList).toContain('ng-invalid');
   });
 
-  it('should go back to normal when a field is filled', () => {
+  it('should be ok', () => {
     const formElement: HTMLElement = fixture.nativeElement;
     const email: HTMLInputElement | null = formElement.querySelector(
       'input[formControlName="email"]'
@@ -91,14 +91,14 @@ describe('LoginComponent', () => {
     expect(email.classList).toContain('ng-valid');
   });
 
-  it('should have a submit button disabled by default', () => {
+  it('should have a submit button', () => {
     const formElement: HTMLElement = fixture.nativeElement;
     const submitButton = formElement.querySelector('button[type="submit"]');
     expect(submitButton).toBeTruthy();
     expect((submitButton as HTMLButtonElement).disabled).toBe(true);
   });
 
-  it('should enable the submit button when the form is valid', () => {
+  it('should allow the submit button', () => {
     const formElement: HTMLElement = fixture.nativeElement;
     const submitButton = formElement.querySelector('button[type="submit"]');
 
@@ -120,7 +120,7 @@ describe('LoginComponent', () => {
     expect((submitButton as HTMLButtonElement).disabled).toBe(false);
   });
 
-  it('should show an error message when the error property is true', () => {
+  it('should show an error message', () => {
     component.onError = true;
     fixture.detectChanges();
     const formElement: HTMLElement = fixture.nativeElement;
@@ -129,7 +129,7 @@ describe('LoginComponent', () => {
     expect(errorMessage!.textContent).toContain('An error occurred');
   });
 
-  it('should state onerror if the submit fails', () => {
+  it('should indicate error', () => {
     const authService = TestBed.inject(AuthService);
     const loginSpy = jest
       .spyOn(authService, 'login')
@@ -140,7 +140,7 @@ describe('LoginComponent', () => {
     expect(component.onError).toBe(true);
   });
 
-  it('should navigate to the sessions page if the submit is successful', () => {
+  it('should navigate to the sessions page', () => {
     const authService = TestBed.inject(AuthService);
 
     const navigateSpy = jest

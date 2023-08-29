@@ -28,8 +28,15 @@ public class TeacherServiceTest {
 
     private List<Teacher> teacherList;
 
+    @BeforeEach
+    public void setup() {
+        this.teacherList = new ArrayList<>();
+        teacherList.add(new Teacher((long)1, "DELAHAYE", "Margot", LocalDateTime.parse("2024-04-10T12:00:00"), LocalDateTime.parse("2024-04-10T12:00:00")));
+        teacherList.add(new Teacher((long)2, "THIERCELIN", "Hélène", LocalDateTime.parse("2024-04-10T12:00:00"), LocalDateTime.parse("2024-04-10T12:00:00")));
+    }
+
     @Test
-    public void itShouldGetAllTeachers(){
+    public void getAllTeachers(){
         given(teacherRepository.findAll()).willReturn(teacherList);
         List<Teacher> teachers = teacherService.findAll();
 
@@ -39,7 +46,7 @@ public class TeacherServiceTest {
     }
 
     @Test
-    public void itShouldGetOneTeacherIfExistent(){
+    public void getTeacherIfExisting(){
         Teacher expectedTeacher = teacherList.get(0);
         given(teacherRepository.findById((long)1)).willReturn(Optional.ofNullable(expectedTeacher));
 
@@ -50,19 +57,12 @@ public class TeacherServiceTest {
     }
 
     @Test
-    public void itShouldNotGetNonExistingTeacher(){
+    public void notGetIfTeacherNotExisting(){
         long testedIndex = 3;
         Optional<Teacher> expectedTeacher = Optional.empty();
         given(teacherRepository.findById(testedIndex)).willReturn((expectedTeacher));
 
         Teacher receivedTeacher = teacherService.findById(testedIndex);
         assertThat(receivedTeacher).isNull();
-    }
-
-    @BeforeEach
-    public void setup() {
-        this.teacherList = new ArrayList<>();
-        teacherList.add(new Teacher((long)1, "DELAHAYE", "Margot", LocalDateTime.parse("2024-04-10T12:00:00"), LocalDateTime.parse("2024-04-10T12:00:00")));
-        teacherList.add(new Teacher((long)2, "THIERCELIN", "Hélène", LocalDateTime.parse("2024-04-10T12:00:00"), LocalDateTime.parse("2024-04-10T12:00:00")));
     }
 }

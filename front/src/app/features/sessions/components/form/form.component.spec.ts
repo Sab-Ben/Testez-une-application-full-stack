@@ -89,7 +89,7 @@ describe('FormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should redirect to the sessions page if user not admin', () => {
+  it('should redirect to the sessions page', () => {
     const spy = jest
         .spyOn(router, 'navigate')
         .mockImplementation(async () => true);
@@ -103,7 +103,7 @@ describe('FormComponent', () => {
     expect(spy).toHaveBeenCalledWith(['/sessions']);
   });
 
-  it('should show an error message on the required fields if they are empty and the form is submitted', () => {
+  it('should show an error message when the form is empty', () => {
     const formElement: HTMLElement = fixture.nativeElement;
     const submitButton = formElement.querySelector<HTMLButtonElement>(
         'button[type="submit"]'
@@ -120,7 +120,7 @@ describe('FormComponent', () => {
     ).toHaveLength(4);
   });
 
-  it('should get the values of the sessions if updating', async () => {
+  it('should get the values of the sessions', async () => {
     jest.spyOn(router, 'url', 'get').mockReturnValue('/update');
     jest.spyOn(sessionApiService, 'detail').mockReturnValue(of(session));
     component.ngOnInit();
@@ -130,7 +130,7 @@ describe('FormComponent', () => {
     expect(component.onUpdate).toBe(true);
   });
 
-  it('should submit an update form and redirect to the sessions page', () => {
+  it('should submit an update form', () => {
     component.onUpdate = true;
     const sessionApiUpdateSpy = jest
         .spyOn(sessionApiService, 'update')
@@ -147,7 +147,7 @@ describe('FormComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith(['sessions']);
   });
 
-  it('should submit a create form and redirect to the sessions page', () => {
+  it('should submit a create form', () => {
     component.onUpdate = false;
     const sessionApiCreateSpy = jest
         .spyOn(sessionApiService, 'create')

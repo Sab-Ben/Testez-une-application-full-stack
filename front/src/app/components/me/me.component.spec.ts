@@ -75,13 +75,13 @@ describe('MeComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should go back to the previous page', () => {
+  it('should return to the home page', () => {
     jest.spyOn(window.history, 'back').mockImplementation(() => {});
     component.back();
     expect(window.history.back).toHaveBeenCalled();
   });
 
-  it('should get user information on init', () => {
+  it('should get user information', () => {
     expect(component.user).toBeTruthy();
     expect(component.user).toEqual({
       id: 1,

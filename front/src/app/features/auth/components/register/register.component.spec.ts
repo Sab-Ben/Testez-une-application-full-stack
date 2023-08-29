@@ -45,7 +45,7 @@ describe('RegisterComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show an error message when the error property is true', () => {
+  it('should show an error when there is onerror', () => {
     component.onError = true;
     fixture.detectChanges();
     const formElement: HTMLElement = fixture.nativeElement;
@@ -54,7 +54,7 @@ describe('RegisterComponent', () => {
     expect(errorMessage!.textContent).toContain('An error occurred');
   });
 
-  it('should show an error message on the required fields if they are empty and the form is submitted', () => {
+  it('should show an error when the form is empty', () => {
     const formElement: HTMLElement = fixture.nativeElement;
     const submitButton = formElement.querySelector<HTMLButtonElement>(
       'button[type="submit"]'
@@ -69,7 +69,7 @@ describe('RegisterComponent', () => {
     expect(formElement.querySelectorAll('input.ng-invalid')).toHaveLength(4);
   });
 
-  it('should state onerror if the submit fails', () => {
+  it('should indicate error', () => {
     const registerSpy = jest
       .spyOn(authService, 'register')
       .mockImplementation(() => throwError(() => new Error('err')));
@@ -79,7 +79,7 @@ describe('RegisterComponent', () => {
     expect(component.onError).toBe(true);
   });
 
-  it('should navigate to the login page if the submit is successful', async () => {
+  it('should navigate to the login page', async () => {
     const navigateSpy = jest
       .spyOn(router, 'navigate')
       .mockImplementation(async () => true);

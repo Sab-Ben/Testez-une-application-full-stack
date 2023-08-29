@@ -16,14 +16,14 @@ describe('SessionService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should log out the user', () => {
+  it('should logout', () => {
     service.logOut();
     expect(service.isLogged).toBe(false);
     expect(service.sessionInformation).toBe(undefined);
     expect(lastValueFrom(service.$isLogged())).resolves.toBe(false);
   });
 
-  it('should log in the user', () => {
+  it('should login', () => {
     service.logIn({ admin: true, id: 1 } as SessionInformation);
     expect(service.isLogged).toBe(true);
     expect(service.sessionInformation).toEqual({ admin: true, id: 1 });

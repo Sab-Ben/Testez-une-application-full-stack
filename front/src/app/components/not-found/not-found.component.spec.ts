@@ -22,7 +22,7 @@ describe('NotFoundComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have an h1 tag', () => {
+  it('should have a title', () => {
     const compiled = fixture.nativeElement;
     expect(compiled.querySelector('h1').textContent).toContain(
         'Page not found !'

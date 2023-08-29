@@ -41,7 +41,7 @@ public class SessionServiceTest {
     private List<Session> sessionList;
 
     @Test
-    public void itShouldFindAllAvailableSessions() {
+    public void findAllSessions() {
         given(sessionRepository.findAll()).willReturn(sessionList);
         List<Session> receivedSessions = sessionService.findAll();
 
@@ -49,7 +49,7 @@ public class SessionServiceTest {
     }
 
     @Test
-    public void itShouldFindASession() {
+    public void findSession() {
         long testedId = 1;
         Optional<Session> expectedSession = Optional.of(sessionList.get(0));
         given(sessionRepository.findById(testedId)).willReturn(expectedSession);
@@ -59,7 +59,7 @@ public class SessionServiceTest {
     }
 
     @Test
-    public void ItShouldCreateASession(){
+    public void createSession(){
         Session session = new Session();
         given(sessionRepository.save(session)).willReturn(session);
         Session receivedSession = sessionService.create(session);
@@ -68,7 +68,7 @@ public class SessionServiceTest {
     }
 
     @Test
-    public void itShouldUpdateASession(){
+    public void updateSession(){
         Session session = sessionList.get(0);
         session.setName("Test");
         session.setDescription("Description Test");
@@ -78,7 +78,7 @@ public class SessionServiceTest {
     }
 
     @Test
-    public void itShouldCallTheDeleteMethod(){
+    public void callTheDeleteMethod(){
         sessionService.delete((long) 10);
         verify(sessionRepository).deleteById(10L);
     }

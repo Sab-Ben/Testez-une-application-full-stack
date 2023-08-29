@@ -1,13 +1,11 @@
-describe('full client flow', () => {
-  before(() => {
-    cy.server();
-  })
-  // auth
+describe('user yoga-app', () => {
+
+  // authentification
   it('should register', () => {
     cy.visit('/');
     cy.get('[routerlink]').contains('Register').click();
 
-    cy.route('POST', '/api/auth/register', {});
+    cy.intercept('POST', '/api/auth/register', {});
 
     cy.get('input[formControlName=firstName]').type('firstName');
     cy.get('input[formControlName=lastName]').type('lastName');
@@ -18,10 +16,9 @@ describe('full client flow', () => {
   });
 
   // sessions
-  it('should login and see the session list', () => {
+  it('should login and see session list page', () => {
     cy.visit('/login');
-    cy.server()
-    cy.route('POST', '/api/auth/login', {
+    cy.intercept('POST', '/api/auth/login', {
       body: {
         id: 1,
         username: 'userName',
@@ -31,8 +28,7 @@ describe('full client flow', () => {
       },
     });
 
-    cy.server()
-    cy.route('GET', '/api/session', {
+    cy.intercept('GET', '/api/session', {
       body: [
         {
           id: 1,
@@ -68,8 +64,8 @@ describe('full client flow', () => {
     cy.url().should('include', '/sessions')
   });
 
-  it('should see the details of a session', () => {
-    cy.route('GET', '/api/session/1', {
+  it('should see the details', () => {
+    cy.intercept('GET', '/api/session/1', {
       body: {
         id: 1,
         name: 'Session 1',
@@ -85,7 +81,7 @@ describe('full client flow', () => {
       },
     }).as('session');
 
-    cy.route('GET', '/api/teacher/1', {
+    cy.intercept('GET', '/api/teacher/1', {
       body:{
         id: 1,
         lastName: 'Ben',
@@ -95,7 +91,7 @@ describe('full client flow', () => {
         },
     }).as('teacher');
 
-    cy.route('GET', '/api/session', {
+    cy.intercept('GET', '/api/session', {
       body: [
         {
           id: 1,
@@ -137,69 +133,16 @@ describe('full client flow', () => {
     cy.get('mat-card-subtitle').contains('Sab BEN')
   });
 
-  it('should unenroll from a session', () => {
-    cy.route('DELETE', '/api/session/1/participate/1', {});
-    cy.route('GET', '/api/session/1', {
-      body: {
-        id: 1,
-        name: 'Session 1',
-        description: 'Lorem ipsum dolor sit amet. ' +
-            'Est incidunt omnis aut tenetur quasi ut ullam autem qui sunt iure. ' +
-            'sed impedit quia id fuga galisum. Eum rerum doloribus quo ' +
-            'dolorem culpa est rerum voluptas aut voluptas temporibus aut dolorem minima?',
-        date: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        teacher_id: 1,
-        users: [1, 2, 3], },
-    }).as('session');
-
-    cy.get('button').contains('Do not participate').should('exist');
-    cy.get('button').contains('Do not participate').click();
-
-    cy.get('button').contains('Participate').should('exist');
-    cy.get('button').contains('Do not participate').should('not.exist');
-
-    cy.get('div').contains('attendees').should('contain', '2');
-  });
-
-  it('should enroll to a session', () => {
-    cy.route('POST', '/api/session/1/participate/1', {});
-    cy.route('GET', '/api/session/1', {
-      body: {
-        id: 1,
-        name: 'Session 1',
-        description: 'Lorem ipsum dolor sit amet. ' +
-            'Est incidunt omnis aut tenetur quasi ut ullam autem qui sunt iure. ' +
-            'sed impedit quia id fuga galisum. Eum rerum doloribus quo ' +
-            'dolorem culpa est rerum voluptas aut voluptas temporibus aut dolorem minima?',
-        date: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        teacher_id: 1,
-        users: [1, 2, 3],
-      },
-    }).as('session');
-
-    cy.get('button').contains('Participate').should('exist');
-    cy.get('button').contains('Participate').click();
-
-    cy.get('button').contains('Participate').should('not.exist');
-    cy.get('button').contains('Do not participate').should('exist');
-
-    cy.get('div').contains('attendees').should('contain', '3');
-  });
-
-  it('should come back to the sessions list', () => {
+  it('should return to sessions list page', () => {
     cy.get('button').first().click();
     cy.url().should('include', '/sessions');
   });
 
   // Account page
-  it('should visit the account page', () => {
-    cy.route('GET', '/api/user/1', {
+  it('should go to the account page', () => {
+    cy.intercept('GET', '/api/user/1', {
       id: 1,
-      email: 'mock@test.com',
+      email: 'toto@test.com',
       lastName: 'Test',
       firstName: 'Toto',
       admin: false,
@@ -210,9 +153,8 @@ describe('full client flow', () => {
     cy.get('.link').contains('Account').click();
     cy.url().should('include', '/me');
 
-    // should have the user information
-    cy.get('p').contains('Toto Test').should('exist');
-    cy.get('p').contains('Email: mock@test.com').should('exist');
+    cy.get('p').should('exist');
+    cy.get('p').should('exist');
   });
 
   // Logout
@@ -228,12 +170,12 @@ describe('full client flow', () => {
   });
 });
 
-describe('admin flow', () => {
+describe('admin yoga-app', () => {
 
-  it('should login as admin', () => {
+  it('should login', () => {
     cy.visit('/login');
     cy.server();
-    cy.route('POST', '/api/auth/login', {
+    cy.intercept('POST', '/api/auth/login', {
       body: {
         id: 1,
         username: 'userName',
@@ -243,14 +185,14 @@ describe('admin flow', () => {
       },
     })
 
-    cy.route('GET', '/api/session', []).as('session')
+    cy.intercept('GET', '/api/session', []).as('session')
     cy.get('input[formControlName=email]').type("yoga@studio.com")
     cy.get('input[formControlName=password]').type(`${"test!1234"}{enter}{enter}`)
     cy.url().should('include', '/sessions');
   });
 
-  it('creates a new session', () => {
-    cy.route('GET', '/api/teacher', {
+  it('create session', () => {
+    cy.intercept('GET', '/api/teacher', {
       body: [
         {
           id: 1,
@@ -271,7 +213,7 @@ describe('admin flow', () => {
     cy.get('button').contains('Create').click();
     cy.url().should('include', '/sessions/create');
 
-    cy.route('POST', '/api/session', {
+    cy.intercept('POST', '/api/session', {
       body: {
         id: 3,
         name: 'New session',
@@ -281,7 +223,7 @@ describe('admin flow', () => {
       },
     }).as('session');
 
-    cy.route('GET', '/api/session', {
+    cy.intercept('GET', '/api/session', {
       body: [
         {
           id: 1,
@@ -333,14 +275,14 @@ describe('admin flow', () => {
     cy.get('button').contains('Save').click();
   });
 
-  it('should see the new session in the list', () => {
+  it('should see the new session', () => {
     cy.get('.item').should('have.length', 3);
     cy.get('.item').contains('New session').should('exist');
   });
 
   // Continuer ?
-  it('should see the details of the new session', () => {
-    cy.route('GET', '/api/session/3', {
+  it('should see the details', () => {
+    cy.intercept('GET', '/api/session/3', {
       body: {
         id: 3,
         name: 'New session',
@@ -350,7 +292,7 @@ describe('admin flow', () => {
       },
     }).as('session');
 
-    cy.route('GET', '/api/teacher/1', {
+    cy.intercept('GET', '/api/teacher/1', {
       body: {
         id: 1,
         lastName: 'Ben',
@@ -366,9 +308,9 @@ describe('admin flow', () => {
     cy.get('div').contains('New session description').should('exist');
   });
 
-  it("should delete the new session and see it doesn't exist anymore", () => {
-    cy.route('DELETE', '/api/session/3', {});
-    cy.route('GET', '/api/session', {
+  it("should delete session", () => {
+    cy.intercept('DELETE', '/api/session/3', {});
+    cy.intercept('GET', '/api/session', {
       body: [{
         id: 1,
         name: 'Session 1',

@@ -84,14 +84,14 @@ describe('DetailComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should go back when clicking on the back button', () => {
+  it('should return to sessions page', () => {
     const spy = jest.spyOn(window.history, 'back').mockImplementation(() => {});
     component.back();
 
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should not have a delete button if not admin', () => {
+  it('should not have a delete button', () => {
     component.isAdmin = false;
     fixture.detectChanges();
     const buttons = fixture.debugElement.queryAll(By.css('button'));
@@ -102,7 +102,7 @@ describe('DetailComponent', () => {
     expect(deleteButton).toBeFalsy();
   });
 
-  it('should have a delete button if admin', () => {
+  it('should have a delete button', () => {
     component.isAdmin = true;
     fixture.detectChanges();
     const buttons = fixture.debugElement.queryAll(By.css('button'));
@@ -113,7 +113,7 @@ describe('DetailComponent', () => {
     expect(deleteButton).toBeTruthy();
   });
 
-  it('should call the participate function if the user is not subscribed to the session', () => {
+  it('should call the participate function', () => {
     component.isAdmin = false;
     component.isParticipate = false;
     fixture.detectChanges();
@@ -131,7 +131,7 @@ describe('DetailComponent', () => {
     expect(componentSpy).toHaveBeenCalled();
   });
 
-  it('should call the unParticipate function if the user is subscribed to the session', () => {
+  it('should call the unParticipate function', () => {
     component.isAdmin = false;
     component.isParticipate = true;
     fixture.detectChanges();
@@ -149,7 +149,7 @@ describe('DetailComponent', () => {
     expect(componentSpy).toHaveBeenCalled();
   });
 
-  it('should refetch the session on participate', () => {
+  it('should recover the session on participate', () => {
     component.session = undefined;
     jest
         .spyOn(sessionApiService, 'participate')
@@ -163,7 +163,7 @@ describe('DetailComponent', () => {
     expect(component.session).toEqual(session);
   });
 
-  it('should refetch the session on unParticipate', () => {
+  it('should recover the session on unParticipate', () => {
     component.session = undefined;
 
     jest
@@ -173,13 +173,12 @@ describe('DetailComponent', () => {
         .spyOn(sessionApiService, 'detail')
         .mockImplementation(() => of(session));
 
-    // Call the unparticipate function
     component.unParticipate();
     expect(detailSpy).toHaveBeenCalled();
     expect(component.session).toEqual(session);
   });
 
-  it('should get the teacher when the session is fetched', () => {
+  it('should get the teacher when the session is recovered', () => {
     jest
         .spyOn(sessionApiService, 'detail')
         .mockImplementation(() => of(session));

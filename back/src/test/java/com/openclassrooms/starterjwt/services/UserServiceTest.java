@@ -28,8 +28,20 @@ public class UserServiceTest {
 
     private List<User> users;
 
+    @BeforeEach
+    public void setup() {
+        this.users = new ArrayList<>();
+        User u1 = new User();
+        User u2 = new User();
+        u1.setId((long) 1).setAdmin(false).setFirstName("Toto").setLastName("Test");
+        u2.setId((long) 2).setAdmin(false).setFirstName("Sab").setLastName("Ben");
+
+        users.add(u1);
+        users.add(u2);
+    }
+
     @Test
-    public void itShouldFindAnExistingUser(){
+    public void findIfUserExisting(){
         long testedId = 1;
         User expectedUser = users.get(0);
 
@@ -41,27 +53,15 @@ public class UserServiceTest {
     }
 
     @Test
-    public void itShouldNotFindANonExistingUser(){
+    public void notFindIfUserNotExisting(){
         given(userRepository.findById(10L)).willReturn(Optional.empty());
         assertThat( userService.findById(10L)).isNull();
     }
 
     @Test
-    public void itShouldCallDelete(){
+    public void deleteUser(){
         userService.delete(1L);
         verify(userRepository).deleteById(1L);
-    }
-
-    @BeforeEach
-    public void setup() {
-        this.users = new ArrayList<>();
-        User u1 = new User();
-        User u2 = new User();
-        u1.setId((long) 1).setAdmin(false).setFirstName("Toto").setLastName("Test");
-        u2.setId((long) 2).setAdmin(false).setFirstName("Sab").setLastName("Ben");
-
-        users.add(u1);
-        users.add(u2);
     }
 
 }
